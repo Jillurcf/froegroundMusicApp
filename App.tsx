@@ -1,118 +1,97 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// import React from 'react';
+// import { Alert, Button, View } from 'react-native';
+// import { NativeModules } from 'react-native';
+
+// const { MusicControlModule } = NativeModules;
+// const App = () => {
+//   const playMusic = () => {
+//     console.log("CLECK");
+//     if (MusicControlModule) {
+     
+//     const url = 'https://d38nvwmjovqyq6.cloudfront.net/va90web25003/companions/Foundations%20of%20Rock/1.01.mp3'
+//       MusicControlModule.play(url);
+//     } else {
+//       Alert.alert('Error', 'MusicControlModule is not available');
+//     }
+//   };
+
+//   const pauseMusic = () => {
+//     if (MusicControlModule) {
+//       MusicControlModule.pause();
+//     } else {
+//       Alert.alert('Error', 'MusicControlModule is not available');
+//     }
+//   };
+
+//   const stopMusic = () => {
+//     if (MusicControlModule) {
+//       MusicControlModule.stop();
+//     } else {
+//       Alert.alert('Error', 'MusicControlModule is not available');
+//     }
+//   };
+
+//   return (
+//     <View>
+//       <Button title="Play" onPress={playMusic} />
+//       <Button title="Pause" onPress={pauseMusic} />
+//       <Button title="Stop" onPress={stopMusic} />
+//     </View>
+//   );
+// };
+
+// export default App;
+
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Button, View, Alert } from 'react-native';
+import { NativeModules } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const { MusicControlModule } = NativeModules;
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () => {
+  const startMusicService = () => {
+    MusicControlModule.startForegroundService('Playing Music...')
+    console.log("play");
+      // .then(() => console.log('Foreground service started'))
+      // .catch((error) => console.log('Error starting foreground service:', error));
+  };
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const stopMusicService = () => {
+    MusicControlModule.stopForegroundService()
+      // .then(() => console.log('Foreground service stopped'))
+      // .catch((error) => console.log('Error stopping foreground service:', error));
+  };
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const playMusic = () => {
+    // const url = 'https://example.com/path/to/audio.mp3'; // Replace with the correct URL
+    const url = './audio.mp3';
+    MusicControlModule.play(url)
+      .then((message) => console.log(message))
+      .catch((error) => Alert.alert('Error', 'Unable to play music: ' + error));
+  };
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const pauseMusic = () => {
+    MusicControlModule.pause()
+      .then((message) => console.log(message))
+      .catch((error) => Alert.alert('Error', 'Unable to pause music: ' + error));
+  };
+
+  const stopMusic = () => {
+    MusicControlModule.stop()
+      .then((message) => console.log(message))
+      .catch((error) => Alert.alert('Error', 'Unable to stop music: ' + error));
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View>
+      <Button title="Start Foreground Music Service" onPress={startMusicService} />
+      <Button title="Stop Foreground Music Service" onPress={stopMusicService} />
+      <Button title="Play Music" onPress={playMusic} />
+      <Button title="Pause Music" onPress={pauseMusic} />
+      <Button title="Stop Music" onPress={stopMusic} />
+    </View>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
